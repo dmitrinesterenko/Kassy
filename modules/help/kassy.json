@@ -1,0 +1,5 @@
+﻿{
+  "name": "help!",
+  "version": 1.0,
+  "startup": "help.js"
+}
