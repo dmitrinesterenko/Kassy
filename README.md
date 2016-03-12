@@ -15,6 +15,11 @@ npm install
 Then start one or more of the available integrations:<br/>
 (eg. `node main.js facebook slack skype test` after configuring to start them all)
 
+## Docker Usage
+Build the docker image with `scripts/build.sh` and then run with `scripts/run.sh`.
+This will create an image tagged as kassy and then run a container based on that image
+launching the commands in the `scripts/entrypoint.sh`.
+
 ### Integrations
 Integrations are chat platforms that Kassy integrates into. The currently available preinstalled ones are:
 - [Facebook Integration](doc/integrations/Facebook.md)
