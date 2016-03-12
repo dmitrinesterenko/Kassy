@@ -13,7 +13,7 @@ exports.help = function() {
 
 not_found_responses = ['I don\'t have an answer for this',
     'The answer is found within you',
-    'Check out the concierges at https://www.theknot.com/concierge'];
+    'I don\'t know but you should ask my other concierges https://www.theknot.com/concierge'];
 
 responses = ['OK, here\'s what I found',
   'Moar info if you want',
@@ -21,8 +21,21 @@ responses = ['OK, here\'s what I found',
   'How about this?'
 ];
 
+hellos = ['hi', 'hello', 'howdy', 'hey', 'how are you'];
+helloResponses = ['Hi', 'Hi there'];
+
 randomResponse = function(responseCount){
   return Math.floor(Math.random() * responseCount);
+};
+
+exports.simpleMatch = function(query, matches, callback){
+    var matchLength = matches.length;
+    console.log('simple match on ' + query);
+    for(var i=0; i<matchLength; i++){
+      if(query.search(matches[i]) > 0){
+        callback();
+      }
+    }
 }
 
 exports.simpleSearch = function (query, callback, errorCallback) {
@@ -50,14 +63,16 @@ exports.simpleSearch = function (query, callback, errorCallback) {
     });
 };
 
-exports.search = function (query, callback) {
+exports.search = function (query, callback, errorCallback) {
     if (!query || query === '') {
-        var index = Math.floor(Math.random() * insults.length);
-        callback(insults[index] + ', try again');
+        errorCallback(not_found_responses[randomResponse(not_found_responses.length)] + ', try again');
     }
     else {
         //try to understand the meaning and then simple search :)
-        exports.simpleSearch(query, callback);
+       // exports.simpleMatch(query, hellos, function(){
+       //   errorCallback(hello_responses[randomResponse(hello_responses.length)]);
+       // });
+        exports.simpleSearch(query, callback, errorCallback);
     }
 };
 
@@ -72,19 +87,13 @@ exports.run = function(api, event) {
      //TODO: extract callback into separate function
 
      // try to be a bit more varied in your responses
-     whichResponse = Math.floor(Math.random() * responses.length);
-
-     /* I realized that this was also extra noise exactly one piece of response text
-      * and a url was a good result
-      *
-      *
-      * api.sendMessage(result.title, responses[0], event.thread_id);
-      if(result.image_url.length > 0){
-      api.sendImage("url", result.image_url, picture_responses[0], event.thread_id);
-     }*/
-     api.sendImage("url", result.url, responses[whichResponse], event.thread_id);
+       console.log('response success');
+       whichResponse = Math.floor(Math.random() * responses.length);
+       api.sendMessage(responses[whichResponse] + result.url, event.thread_id);
+       //api.sendImage("url", result.url, responses[whichResponse], event.thread_id);
     },
     function(result){
+      console.log('response error');
       api.sendMessage(result, event.thread_id);
     });
 };

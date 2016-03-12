@@ -1,2 +1,2 @@
 #!/bin/bash
-node main.js debug facebook
+node main.js debug slack #facebook
